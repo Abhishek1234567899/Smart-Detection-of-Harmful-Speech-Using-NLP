@@ -16,7 +16,7 @@ DATA_INGESTION_IMBALANCE_DATA_DIR = "imbalanced_data.csv"
 DATA_INGESTION_RAW_DATA_DIR = "raw_data.csv"
 
 
-'''# Data transformation constants 
+# Data transformation constants 
 DATA_TRANSFORMATION_ARTIFACTS_DIR = 'DataTransformationArtifacts'
 TRANSFORMED_FILE_NAME = "final.csv"
 DATA_DIR = "data"
@@ -27,7 +27,7 @@ DROP_COLUMNS = ['Unnamed: 0','count','hate_speech','offensive_language','neither
 CLASS = 'class'
 
 
-# Model training constants
+'''# Model training constants
 MODEL_TRAINER_ARTIFACTS_DIR = 'ModelTrainerArtifacts'
 TRAINED_MODEL_DIR = 'trained_model'
 TRAINED_MODEL_NAME = 'model.h5'

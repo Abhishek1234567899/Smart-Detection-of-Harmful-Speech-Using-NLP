@@ -17,7 +17,7 @@ class DataIngestionConfig:
         self.ZIP_FILE_PATH = os.path.join(self.DATA_INGESTION_ARTIFACTS_DIR,self.ZIP_FILE_NAME)
 
 
-'''
+
 @dataclass
 class DataTransformationConfig:
     def __init__(self):
@@ -32,7 +32,7 @@ class DataTransformationConfig:
         self.TWEET = TWEET
 
 
-
+''''
 @dataclass
 class ModelTrainerConfig: 
     def __init__(self):
