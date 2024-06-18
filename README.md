@@ -13,3 +13,11 @@ conda activate hate
 '''bash
 pip isntall -r requirements.txt
 '''
+# Project Workflow
+
+- constants
+- config_enity
+- artifact_enity
+- components
+- pipeline
+- app.py
