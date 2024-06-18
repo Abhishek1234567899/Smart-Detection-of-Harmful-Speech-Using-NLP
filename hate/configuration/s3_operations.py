@@ -1,14 +1,14 @@
 import os
-import pickle
 import sys
+import boto3
 from io import StringIO
 from typing import List, Union
 from botocore.exceptions import ClientError
-import boto3
-from hate.exception import HateException
+from hate.exception import CustomException  # Assuming CustomException is used here
 from hate.logger import logging
-from mypy_boto3_s3.service_resource import Bucket
+from mypy_boto3_s3.service_resource import Bucket  # Make sure this is correct
 from hate.constants import *
+
 
 MODEL_SAVE_FORMAT = ".pt"
 
@@ -17,7 +17,7 @@ class S3Operation:
     s3_resource = None
 
     def __init__(self):
-        if S3Operation.s3_resource is None or S3Operation.s3_client is None:
+        if S3Operation.s3_resource is None or S3Operation.s3_client ==None:
             __access_key_id = os.getenv(AWS_ACCESS_KEY_ID_ENV_KEY)
             __secret_access_key = os.getenv(AWS_SECRET_ACCESS_KEY_ENV_KEY)
             if __access_key_id is None:
@@ -53,19 +53,13 @@ class S3Operation:
         Revisions   :   moved setup to cloud
         """
         logging.info("Entered the read_object method of S3Operation class")
-
         try:
-            func = (
-                lambda: object_name.get()["Body"].read().decode() if decode is True else object_name.get()["Body"].read()
-            )
-            conv_func = lambda: StringIO(func()) if make_readable is True else func()
-
+            func = lambda: object_name.get()["Body"].read().decode() if decode else object_name.get()["Body"].read()
+            result = StringIO(func()) if make_readable else func()
             logging.info("Exited the read_object method of S3Operation class")
-
-            return conv_func()
-
+            return result
         except Exception as e:
-            raise HateException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_bucket(self, bucket_name: str) -> Bucket:
         """
@@ -79,16 +73,12 @@ class S3Operation:
         Revisions   :   moved setup to cloud
         """
         logging.info("Entered the get_bucket method of S3Operation class")
-
         try:
             bucket = self.s3_resource.Bucket(bucket_name)
-
             logging.info("Exited the get_bucket method of S3Operation class")
-
             return bucket
-
         except Exception as e:
-            raise HateException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def get_file_object(self, filename: str, bucket_name: str) -> Union[List[object], object]:
         """
@@ -102,22 +92,14 @@ class S3Operation:
         Revisions   :   moved setup to cloud
         """
         logging.info("Entered the get_file_object method of S3Operation class")
-
         try:
             bucket = self.get_bucket(bucket_name)
-
-            lst_objs = [object for object in bucket.objects.filter(Prefix=filename)]
-
-            func = lambda x: x[0] if len(x) == 1 else x
-
-            file_objs = func(lst_objs)
-
+            file_objects = list(bucket.objects.filter(Prefix=filename))
+            result = file_objects[0] if len(file_objects) == 1 else file_objects
             logging.info("Exited the get_file_object method of S3Operation class")
-
-            return file_objs
-
+            return result
         except Exception as e:
-            raise HateException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def load_model(self, model_name: str, bucket_name: str, model_dir: str = None) -> object:
         """
@@ -131,22 +113,14 @@ class S3Operation:
         Revisions   :   moved setup to cloud
         """
         logging.info("Entered the load_model method of S3Operation class")
-
         try:
-            func = lambda: model_name if model_dir is None else model_dir + "/" + model_name
-
-            model_file = func()
-
-            f_obj = self.get_file_object(model_file, bucket_name)
-
-            model_obj = self.read_object(f_obj, decode=False)
-
+            model_file = model_name if model_dir is None else f"{model_dir}/{model_name}"
+            file_object = self.get_file_object(model_file, bucket_name)
+            model_object = self.read_object(file_object, decode=False)
             logging.info("Exited the load_model method of S3Operation class")
-
-            return model_obj
-
+            return model_object
         except Exception as e:
-            raise HateException(e, sys) from e
+            raise CustomException(e, sys) from e
 
     def create_folder(self, folder_name: str, bucket_name: str) -> None:
         """
@@ -160,20 +134,16 @@ class S3Operation:
         Revisions   :   moved setup to cloud
         """
         logging.info("Entered the create_folder method of S3Operation class")
-
         try:
-            self.s3_resource.Object(bucket_name, folder_name).load()
-
+            folder_obj = f"{folder_name}/"
+            self.s3_client.put_object(Bucket=bucket_name, Key=folder_obj)
+            logging.info(f"Folder {folder_name} created in bucket {bucket_name}")
         except ClientError as e:
             if e.response["Error"]["Code"] == "404":
-                folder_obj = folder_name + "/"
-
-                self.s3_client.put_object(Bucket=bucket_name, Key=folder_obj)
-
+                self.s3_client.put_object(Bucket=bucket_name, Key=f"{folder_name}/")
+                logging.info(f"Folder {folder_name} created in bucket {bucket_name}")
             else:
-                pass
-
-            logging.info("Exited the create_folder method of S3Operation class")
+                raise CustomException(e, sys) from e
 
     def upload_file(self, from_filename: str, to_filename: str, bucket_name: str, remove: bool = True):
         """
@@ -187,28 +157,18 @@ class S3Operation:
         Revisions   :   moved setup to cloud
         """
         logging.info("Entered the upload_file method of S3Operation class")
-
         try:
-            logging.info(f"Uploading {from_filename} file to {to_filename} file in {bucket_name} bucket")
-
+            logging.info(f"Uploading {from_filename} file to {to_filename} in {bucket_name} bucket")
             self.s3_resource.meta.client.upload_file(from_filename, bucket_name, to_filename)
-
-            logging.info(f"Uploaded {from_filename} file to {to_filename} file in {bucket_name} bucket")
-
-            if remove is True:
+            logging.info(f"Uploaded {from_filename} to {to_filename} in {bucket_name} bucket")
+            if remove:
                 os.remove(from_filename)
-
-                logging.info(f"Remove is set to {remove}, deleted the file")
-
-            else:
-                logging.info(f"Remove is set to {remove}, not deleted the file")
-
+                logging.info(f"Removed local file {from_filename}")
             logging.info("Exited the upload_file method of S3Operation class")
-
         except Exception as e:
-            raise HateException(e, sys) from e
+            raise CustomException(e, sys) from e
 
-    def read_data_from_s3(self, filename: str, bucket_name: str, output_filename: str):
+    def read_data_from_s3(self, filename: str, bucket_name: str, output_filename: str) -> str:
         """
         Method Name :   read_data_from_s3
         Description :   This method downloads a file from an S3 bucket to a local file
@@ -216,12 +176,12 @@ class S3Operation:
         Output      :   The downloaded file's local path
         On Failure  :   Write an exception log and then raise an exception
         """
+        logging.info("Entered the read_data_from_s3 method of S3Operation class")
         try:
             bucket = self.get_bucket(bucket_name)
-            
             bucket.download_file(Key=filename, Filename=output_filename)
-
+            logging.info(f"Downloaded {filename} from bucket {bucket_name} to {output_filename}")
+            logging.info("Exited the read_data_from_s3 method of S3Operation class")
             return output_filename
-            
         except Exception as e:
-            raise HateException(e, sys) from e
+            raise CustomException(e, sys) from e

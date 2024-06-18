@@ -1,66 +1,67 @@
-'''import os
-import torch
+import os
+
 from datetime import datetime
 
+# Common constants
 TIMESTAMP: str = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
-
-# Data Ingestion Constants
 ARTIFACTS_DIR = os.path.join("artifacts", TIMESTAMP)
-BUCKET_NAME = 'helmet-object-detection'
-ZIP_FILE_NAME = 'data.zip'
-ANNOTATIONS_COCO_JSON_FILE = '_annotations.coco.json'
+BUCKET_NAME = 'hate-test-bucket'
+ZIP_FILE_NAME = 'dataset.zip'
+LABEL = 'label'
+TWEET = 'tweet'
 
-INPUT_SIZE = 416
-HORIZONTAL_FLIP = 0.3
-VERTICAL_FLIP = 0.3
-RANDOM_BRIGHTNESS_CONTRAST = 0.1
-COLOR_JITTER = 0.1
-BBOX_FORMAT = 'coco'
+# Data ingestion constants
+DATA_INGESTION_ARTIFACTS_DIR = "DataIngestionArtifacts"
+DATA_INGESTION_IMBALANCE_DATA_DIR = "imbalanced_data.csv"
+DATA_INGESTION_RAW_DATA_DIR = "raw_data.csv"
 
-RAW_FILE_NAME = 'helmet'
 
-# Data ingestion constants 
-DATA_INGESTION_ARTIFACTS_DIR = 'DataIngestionArtifacts'
-DATA_INGESTION_TRAIN_DIR = 'train'
-DATA_INGESTION_TEST_DIR = 'test'
-DATA_INGESTION_VALID_DIR = 'valid'
-
-# Data transformation constants 
+'''# Data transformation constants 
 DATA_TRANSFORMATION_ARTIFACTS_DIR = 'DataTransformationArtifacts'
-DATA_TRANSFORMATION_TRAIN_DIR = 'Train'
-DATA_TRANSFORMATION_TEST_DIR = 'Test'
-DATA_TRANSFORMATION_TRAIN_FILE_NAME = "train.pkl"
-DATA_TRANSFORMATION_TEST_FILE_NAME = "test.pkl"
-DATA_TRANSFORMATION_TRAIN_SPLIT = 'train'
-DATA_TRANSFORMATION_TEST_SPLIT = 'test'
+TRANSFORMED_FILE_NAME = "final.csv"
+DATA_DIR = "data"
+ID = 'id'
+AXIS = 1
+INPLACE = True
+DROP_COLUMNS = ['Unnamed: 0','count','hate_speech','offensive_language','neither']
+CLASS = 'class'
 
 
-# Model Training Constants 
-TRAINED_MODEL_DIR = 'TrainedModel'
-TRAINED_MODEL_NAME = 'model.pt'
-TRAINED_BATCH_SIZE = 2
-TRAINED_SHUFFLE = False
-TRAINED_NUM_WORKERS = 1
+# Model training constants
+MODEL_TRAINER_ARTIFACTS_DIR = 'ModelTrainerArtifacts'
+TRAINED_MODEL_DIR = 'trained_model'
+TRAINED_MODEL_NAME = 'model.h5'
+X_TEST_FILE_NAME = 'x_test.csv'
+Y_TEST_FILE_NAME = 'y_test.csv'
+
+X_TRAIN_FILE_NAME = 'x_train.csv'
+
+RANDOM_STATE = 42
 EPOCH = 1
+BATCH_SIZE = 128
+VALIDATION_SPLIT = 0.2
 
 
-# Model evaluation constants
+# Model Architecture constants
+MAX_WORDS = 50000
+MAX_LEN = 300
+LOSS = 'binary_crossentropy'
+METRICS = ['accuracy']
+ACTIVATION = 'sigmoid'
+
+
+# Model  Evaluation constants
 MODEL_EVALUATION_ARTIFACTS_DIR = 'ModelEvaluationArtifacts'
+BEST_MODEL_DIR = "best_Model"
 MODEL_EVALUATION_FILE_NAME = 'loss.csv'
 
-# Common constants
-use_cuda = torch.cuda.is_available()
-DEVICE = torch.device("cuda" if use_cuda else "cpu")
 
+MODEL_NAME = 'model.h5'
 APP_HOST = "0.0.0.0"
-APP_PORT = 8080
-
-# Prediction Constants
-PREDICTION_CLASSES = ['With Helmet', 'Without Helmet']'''
-
+APP_PORT = 8080'''
 
 
 # AWS CONSTANTS
-AWS_ACCESS_KEY_ID_ENV_KEY = "AWS_ACCESS_KEY_ID"
+AWS_ACCESS_KEY_ID_ENV_KEY ="AWS_ACCESS_KEY_ID"
 AWS_SECRET_ACCESS_KEY_ENV_KEY = "AWS_SECRET_ACCESS_KEY"
-REGION_NAME = "ap-south-1" 
+REGION_NAME = "us-east-1"
