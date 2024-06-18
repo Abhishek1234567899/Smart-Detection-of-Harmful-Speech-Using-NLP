@@ -15,7 +15,7 @@ class DataTransformationArtifacts:
 
 
 
-'''
+
 @dataclass
 class ModelTrainerArtifacts: 
     trained_model_path:str
@@ -23,7 +23,7 @@ class ModelTrainerArtifacts:
     y_test_path: list
 
 
-
+'''
 @dataclass
 class ModelEvaluationArtifacts:
     is_model_accepted: bool 

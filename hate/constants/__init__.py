@@ -27,7 +27,7 @@ DROP_COLUMNS = ['Unnamed: 0','count','hate_speech','offensive_language','neither
 CLASS = 'class'
 
 
-'''# Model training constants
+# Model training constants
 MODEL_TRAINER_ARTIFACTS_DIR = 'ModelTrainerArtifacts'
 TRAINED_MODEL_DIR = 'trained_model'
 TRAINED_MODEL_NAME = 'model.h5'
@@ -50,7 +50,7 @@ METRICS = ['accuracy']
 ACTIVATION = 'sigmoid'
 
 
-# Model  Evaluation constants
+'''# Model  Evaluation constants
 MODEL_EVALUATION_ARTIFACTS_DIR = 'ModelEvaluationArtifacts'
 BEST_MODEL_DIR = "best_Model"
 MODEL_EVALUATION_FILE_NAME = 'loss.csv'

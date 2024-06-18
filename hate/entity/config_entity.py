@@ -32,7 +32,7 @@ class DataTransformationConfig:
         self.TWEET = TWEET
 
 
-''''
+
 @dataclass
 class ModelTrainerConfig: 
     def __init__(self):
@@ -54,7 +54,7 @@ class ModelTrainerConfig:
         self.VALIDATION_SPLIT = VALIDATION_SPLIT
 
 
-
+'''
 @dataclass
 class ModelEvaluationConfig: 
     def __init__(self):
