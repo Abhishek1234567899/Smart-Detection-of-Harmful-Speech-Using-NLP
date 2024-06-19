@@ -11,6 +11,7 @@ from keras.utils import pad_sequences
 from hate.entity.config_entity import ModelTrainerConfig
 from hate.entity.artifact_entity import ModelTrainerArtifacts,DataTransformationArtifacts
 from hate.ml.model import ModelArchitecture
+#from keras.callbacks import EarlyStopping
 
 
 

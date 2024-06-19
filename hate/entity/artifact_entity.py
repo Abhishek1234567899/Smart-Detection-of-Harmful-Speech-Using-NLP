@@ -23,7 +23,7 @@ class ModelTrainerArtifacts:
     y_test_path: list
 
 
-'''
+
 @dataclass
 class ModelEvaluationArtifacts:
     is_model_accepted: bool 
@@ -32,4 +32,5 @@ class ModelEvaluationArtifacts:
 
 @dataclass
 class ModelPusherArtifacts:
-    bucket_name: str '''
+    bucket_name: str 
+  
